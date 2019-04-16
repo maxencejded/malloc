@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mjacques <marvin@42.fr>                    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/03/06 17:36:23 by mjacques          #+#    #+#              #
-#    Updated: 2019/03/06 17:36:27 by mjacques         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 ifeq ($(HOSTTYPE),)
 	HOSTTYPE	:= $(shell uname -m)_$(shell uname -s)
 endif
@@ -22,7 +10,7 @@ LIBFT 			= libft/libft.a
 INCLUDES		= -I includes\
 				  -I libft/includes
 
-FUNCTIONS		=
+FUNCTIONS		= ft_malloc.c ft_free.c zone.c print_memory.c
 FILES			= $(addprefix srcs/, $(FUNCTIONS))
 OBJECTS			= $(FILES:.c=.o)
 
@@ -36,7 +24,7 @@ all: $(NAME)
 $(LIBFT):
 	@make -C libft
 
-$(NAME): $(LIBFT) $(OBJECTS)
+$(NAME): $(OBJECTS) #$(LIBFT)
 	@$(CC) $(CFLAGS) -o $@ $(INCLUDES) $(OBJECTS) $(LIBFT)
 	@ln -sf $@ libft_malloc.so
 

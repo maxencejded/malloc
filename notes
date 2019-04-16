@@ -1,0 +1,8 @@
+An allocator must keep track of which parts of the memory are in use, and which parts are free.
+The goal of the allocator design is usually to minimize wasted space without undue time cost, or vice versa.
+The ideal allocator would spend negligible time managing memory and waste negligible space.
+
+Malloc (0):
+Based on the C standard (C17 7.22.3/1):
+If the size of the space requested is zero, the behavior is implementation defined: either a null pointer is returned,
+or the behavior is as if the size were some nonzero value, except that the returned pointer shall not be used to access an object.
