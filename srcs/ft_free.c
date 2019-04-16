@@ -1,5 +1,7 @@
 #include "malloc.h"
 
+t_malloc		*g_malloc[3];
+
 static int		desalloc_zone(size_t ptr)
 {
 	int			i;
@@ -21,6 +23,7 @@ static int		desalloc_zone(size_t ptr)
 
 static void		desalloc_double_free(void *ptr)
 {
+	(void)ptr;
 	write(2, "malloc: *** ", 13);
 	write(2, "double free or corruption ", 27);
 	write(2, "***\n", 4);
@@ -28,12 +31,13 @@ static void		desalloc_double_free(void *ptr)
 
 static void		desalloc_not_allocated(void *ptr)
 {
+	(void)ptr;
 	write(2, "malloc: *** ", 13);
 	write(2, "pointer being freed was not allocated ", 39);
 	write(2, "***\n", 4);
 }
 
-void			ft_free(void *ptr)
+void			free(void *ptr)
 {
 	int			i;
 	t_header	*elem;
@@ -48,8 +52,7 @@ void			ft_free(void *ptr)
 		if (elem && elem->flag == 1)
 		{
 			elem->flag = 0;
-			// Remove bzero ?
-			bzero(ptr, elem->data);
+			ft_bzero(ptr, elem->data);
 		}
 		else
 			desalloc_double_free(ptr);

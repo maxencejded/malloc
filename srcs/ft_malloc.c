@@ -1,5 +1,7 @@
 #include "malloc.h"
 
+t_malloc		*g_malloc[3];
+
 static int		alloc_zone(size_t size)
 {
 	int		i;
@@ -79,7 +81,7 @@ static void		*alloc_new(int i, size_t size)
 	return (ptr);
 }
 
-void			*ft_malloc(size_t size)
+void			*malloc(size_t size)
 {
 	int		i;
 	void	*ptr;
