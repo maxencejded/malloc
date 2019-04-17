@@ -1,14 +1,15 @@
 #include "malloc.h"
 
-static void		putnbr_hex(int octet)
+static void		putnbr_hex(int fd, size_t nbr, int size)
 {
 	static char	*base = "0123456789abcdef";
 
-	write(1, base + (octet >> 4) % 16, 1);
-	write(1, base + octet % 16, 1);
+	if (size > 1)
+		putnbr_hex(fd, nbr >> 4, size - 1);
+	write(fd, base + (nbr % 16), 1);
 }
 
-static void		putchar_hex(unsigned char *ptr, int j)
+static void		putchar_mem(unsigned char *ptr, int j)
 {
 
 	while (j >= 0)
@@ -34,9 +35,9 @@ void			print_memory(void *addr, size_t size)
 	j = 0;
 	while (i < size)
 	{
-		putnbr_hex(*(ptr + i));
+		putnbr_hex(1, *(ptr + i), 2);
 		(i % 2) ? write(1, " ", 1) : 0;
-		(j == 15) ? putchar_hex(ptr + i, j) : 0;
+		(j == 15) ? putchar_mem(ptr + i, j) : 0;
 		j = (j == 15) ? 0 : j + 1;
 		i += 1;
 	}
@@ -45,6 +46,12 @@ void			print_memory(void *addr, size_t size)
 		k = -1;
 		while (++k + j < 16)
 			((k + j) % 2) ? write(1, "   ", 3) : write(1, "  ", 2);
-		putchar_hex(ptr + i, j - 1);
+		putchar_mem(ptr + i, j - 1);
 	}
+}
+
+void			print_ptr(size_t ptr, int fd)
+{
+	write(1, "0x", 2);
+	putnbr_hex(fd, ptr, 16);
 }

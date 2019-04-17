@@ -2,37 +2,42 @@
 
 t_malloc		*g_malloc[3];
 
+static t_malloc		*zone_new(size_t size, t_malloc *addr)
+{
+	t_malloc	*i;
+
+	i = (t_malloc *)mmap(addr, size, PROT_READ | PROT_WRITE,
+			MAP_ANON | MAP_PRIVATE, -1, 0);
+	ft_bzero(i, size);
+	i->use = sizeof(t_malloc);
+	i->size = size;
+	i->next = NULL;
+	return (i);
+}
+
 /*
  * Create a new zone with the system call mmap.
  * If one zone is allocated, depending if the page is contigous
  * (if the address of the new = addr + size) they are merged to
  * make one big memory otherwise, it's add at in the pointer '*next'.
  */
-void		zone_init(t_malloc **addr, size_t size)
+void				zone_init(t_malloc **addr, size_t size)
 {
-	size_t	diff;
+	size_t		diff;
+	t_malloc	*i;
 
 	diff = 0;
 	if (*addr == NULL)
-	{
-		(*addr) = (t_malloc *)mmap(0, size, PROT_READ | PROT_WRITE,
-				MAP_ANON | MAP_PRIVATE, -1, 0);
-		ft_bzero((*addr), size);
-		(*addr)->use = sizeof(t_malloc);
-		(*addr)->size = size;
-		(*addr)->next = NULL;
-	}
+		(*addr) = zone_new(size, 0);
 	else
 	{
-		(*addr)->next = (t_malloc *)mmap((*addr), size, PROT_READ | PROT_WRITE,
-				MAP_ANON | MAP_PRIVATE, -1, 0);
-		ft_bzero((*addr)->next, size);
-		diff = (size_t)(*addr)->next - (size_t)(*addr) - (*addr)->size;
+		i = zone_new(size, *addr);
+		diff = (size_t)i - (size_t)(*addr) - (*addr)->size;
 		if (diff == 0)
 			(*addr)->size += size;
 		else
-			(*addr)->next->size = size;
-		(*addr)->next = (diff == 0) ? NULL : (*addr)->next;
+			(*addr)->next = i;
+
 	}
 }
 

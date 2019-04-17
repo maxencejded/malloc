@@ -2,61 +2,66 @@
 
 t_malloc		*g_malloc[3];
 
-static int		desalloc_zone(size_t ptr)
+static void		dealloc_double_free(size_t ptr)
 {
-	int			i;
-	size_t		addr;
-
-	i = 0;
-	while (i < 3)
-	{
-		if (g_malloc[i] != NULL)
-		{
-			addr = (size_t)g_malloc[i];
-			if (addr < ptr && ptr < (addr + g_malloc[i]->size))
-				return (i);
-		}
-		i += 1;
-	}
-	return (-1);
+	write(2, "malloc: *** ", 12);
+	write(2, "double free or corruption : ", 29);
+	print_ptr((size_t)ptr, 2);
+	write(2, " ***\n", 5);
 }
 
-static void		desalloc_double_free(void *ptr)
+static void		dealloc_not_allocated(size_t ptr)
 {
-	(void)ptr;
-	write(2, "malloc: *** ", 13);
-	write(2, "double free or corruption ", 27);
-	write(2, "***\n", 4);
+	write(2, "malloc: *** ", 12);
+	write(2, "pointer being freed was not allocated : ", 40);
+	print_ptr((size_t)ptr, 2);
+	write(2, " ***\n", 5);
 }
 
-static void		desalloc_not_allocated(void *ptr)
+static int		dealloc_page(t_malloc *addr, size_t ptr)
 {
-	(void)ptr;
-	write(2, "malloc: *** ", 13);
-	write(2, "pointer being freed was not allocated ", 39);
-	write(2, "***\n", 4);
-}
-
-void			free(void *ptr)
-{
-	int			i;
 	t_header	*elem;
 
-	elem = NULL;
-	if (ptr == NULL)
-		return ;
-	i = desalloc_zone((size_t)ptr);
-	if (i != -1)
+	if ((size_t)addr < ptr && ptr < ((size_t)addr + addr->size))
 	{
 		elem = (t_header *)ptr - 1;
 		if (elem && elem->flag == 1)
 		{
 			elem->flag = 0;
-			ft_bzero(ptr, elem->data);
+			ft_bzero((void *)ptr, elem->data);
 		}
 		else
-			desalloc_double_free(ptr);
+			dealloc_double_free(ptr);
+		return (1);
 	}
-	else
-		desalloc_not_allocated(ptr);
+	return (0);
+}
+
+static int		dealloc_zone(size_t ptr)
+{
+	int			i;
+	t_malloc	*tmp;
+
+	i = 0;
+	tmp = NULL;
+	while (i < 3)
+	{
+		tmp = g_malloc[i];
+		while (tmp)
+		{
+			if (dealloc_page(tmp, ptr) == 1)
+				return (1);
+			tmp = tmp->next;
+		}
+		i += 1;
+	}
+	dealloc_not_allocated(ptr);
+	return (0);
+}
+
+void			free(void *ptr)
+{
+	if (ptr == NULL)
+		return ;
+	dealloc_zone((size_t)ptr);
 }

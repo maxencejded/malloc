@@ -31,9 +31,9 @@ typedef struct			s_malloc
 
 extern t_malloc				*g_malloc[3];
 
-// void		*realloc(void *ptr, size_t size);
 // void		show_alloc_mem();
 void			print_memory(void *addr, size_t size);
+void			print_ptr(size_t ptr, int fd);
 
 void			zone_init(t_malloc **addr, size_t size);
 void			zone_free(t_malloc *addr);
@@ -41,6 +41,7 @@ void			malloc_print();
 size_t			zone_size(int i);
 
 void			*malloc(size_t size);
+void			*realloc(void *ptr, size_t size);
 
 void			free(void *ptr);
 
