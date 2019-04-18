@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-t_malloc		*g_malloc[3];
+t_malloc		*g_malloc[4];
 
 static t_malloc		*zone_new(size_t size, t_malloc *addr)
 {
@@ -53,25 +53,6 @@ void		zone_free(t_malloc *addr)
 			zone_free(addr->next);
 		munmap(addr, addr->size);
 	}
-}
-
-static void	zone_print(t_malloc	*addr)
-{
-	if (addr)
-	{
-		print_memory(addr, addr->size);
-		zone_print(addr->next);
-	}
-}
-
-void		malloc_print()
-{
-	if (g_malloc[0])
-		zone_print(g_malloc[0]);
-	if (g_malloc[1])
-		zone_print(g_malloc[1]);
-	if (g_malloc[2])
-		zone_print(g_malloc[2]);
 }
 
 size_t		zone_size(int i)

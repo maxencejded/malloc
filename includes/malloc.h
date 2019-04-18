@@ -6,7 +6,7 @@
 # include <sys/mman.h>
 # include <sys/resource.h>
 
-# pragma pack(1)
+//# pragma pack(1)
 
 # define PAGE_SIZE	getpagesize()
 # define TINY_SIZE	PAGE_SIZE * 10
@@ -18,9 +18,14 @@
 
 typedef struct			s_header
 {
-	char				flag;
 	size_t				data;
 }						t_header;
+
+typedef struct			s_free
+{
+	size_t				data;
+	void				*address;
+}						t_free;
 
 typedef struct			s_malloc
 {
@@ -29,11 +34,14 @@ typedef struct			s_malloc
 	struct s_malloc		*next;
 }						t_malloc;
 
-extern t_malloc				*g_malloc[3];
+extern t_malloc			*g_malloc[4];
 
 // void		show_alloc_mem();
 void			print_memory(void *addr, size_t size);
 void			print_ptr(size_t ptr, int fd);
+
+void			error_double_free(size_t ptr);
+void			error_not_allocated(size_t ptr);
 
 void			zone_init(t_malloc **addr, size_t size);
 void			zone_free(t_malloc *addr);
