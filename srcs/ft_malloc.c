@@ -77,7 +77,7 @@ void			*realloc(void *ptr, size_t size)
 	t_header	*elem;
 
 	o = NULL;
-	if (size == 0 || zone_search(ptr) != 0)
+	if (size == 0 || zone_search(ptr) == 2)
 		return (NULL);
 	if (ptr == NULL)
 		return (malloc(size));
