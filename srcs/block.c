@@ -22,7 +22,6 @@ void		block_add(t_header *i, void *ptr)
 			elem = (t_free *)((char *)zone + sizeof(t_malloc));
 		}
 	}
-	i->flag = 0;
 	elem->data = i->data;
 	elem->address = ptr;
 	zone->use += sizeof(t_free);
@@ -45,7 +44,6 @@ void		*block_search(size_t size)
 		{
 			ptr = block->address;
 			elem = (t_header *)((char *)block->address - sizeof(t_header));
-			elem->flag = 1;
 			ft_bzero(block, sizeof(t_free));
 			return (ptr);
 		}

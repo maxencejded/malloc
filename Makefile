@@ -27,11 +27,9 @@ $(NAME): $(OBJECTS)
 
 clean:
 	@$(RM) $(OBJECTS)
-	@make clean -C libft
 
 fclean: clean
 	@$(RM) $(NAME)
 	@$(RM) libft_malloc.so
-	@make fclean -C libft
 
 re: fclean all

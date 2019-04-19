@@ -49,11 +49,10 @@ static int			page_search(t_malloc *addr, void *ptr)
 
 	if ((size_t)addr < (size_t)ptr && (size_t)ptr < ((size_t)addr + addr->size))
 	{
-		elem = (t_header *)ptr - 1;
+		elem = (t_header *)((char *)ptr - sizeof(t_header));
 		if (elem && elem->flag == 1)
 		{
 			block_add(elem, ptr);
-			elem->flag = 0;
 			return (1);
 		}
 		return (2);

@@ -12,6 +12,6 @@ void			free(void *ptr)
 	ret = zone_search(ptr);
 	if (ret == 1)
 		error_not_allocated((size_t)ptr);
-	else if (ret == 2)
+	if (ret == 2)
 		error_double_free((size_t)ptr);
 }
