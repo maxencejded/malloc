@@ -8,9 +8,10 @@ NAME			= libft_malloc_$(HOSTTYPE).so
 CFLAGS			= -Wall -Wextra -Werror
 INCLUDES		= -I includes
 
-FUNCTIONS		= ft_malloc.c ft_free.c zone.c print.c print_memory.c
-LIBFT			= ft_bzero.c
-FILES			= $(addprefix srcs/, $(FUNCTIONS) $(LIBFT))
+FUNCTIONS		= ft_malloc.c ft_free.c zone.c block.c
+PRINT			= print.c show_alloc.c print_memory.c
+LIBFT			= ft_bzero.c ft_memcpy.c ft_putnbr.c
+FILES			= $(addprefix srcs/, $(FUNCTIONS) $(PRINT) $(LIBFT))
 OBJECTS			= $(FILES:.c=.o)
 
 .PHONY: all clean fclean re

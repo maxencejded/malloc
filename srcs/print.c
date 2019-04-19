@@ -1,22 +1,22 @@
 #include "malloc.h"
 
-static void	zone_print(t_malloc	*addr)
+static void	print_zone(t_malloc *addr)
 {
 	if (addr)
 	{
 		print_memory(addr, addr->size);
-		zone_print(addr->next);
+		print_zone(addr->next);
 	}
 }
 
-void		malloc_print()
+void		malloc_print(void)
 {
 	if (g_malloc[0])
-		zone_print(g_malloc[0]);
+		print_zone(g_malloc[0]);
 	if (g_malloc[1])
-		zone_print(g_malloc[1]);
+		print_zone(g_malloc[1]);
 	if (g_malloc[2])
-		zone_print(g_malloc[2]);
+		print_zone(g_malloc[2]);
 }
 
 void		error_double_free(size_t ptr)

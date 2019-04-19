@@ -24,6 +24,7 @@ static t_header	*alloc_find_new(t_malloc *addr, size_t size)
 	if (needed + addr->use <= addr->size)
 	{
 		elem = (t_header *)((char *)addr + addr->use);
+		elem->flag = 1;
 		elem->data = size;
 		addr->use += needed;
 		return (elem);
@@ -32,41 +33,6 @@ static t_header	*alloc_find_new(t_malloc *addr, size_t size)
 	if (addr->next)
 		return (alloc_find_new(addr->next, size));
 	return (alloc_find_new(addr, size));
-}
-
-void			*free_block_search(size_t size)
-{
-	size_t		pos;
-	void		*ptr;
-	t_free		*elem;
-	t_malloc	*zone;
-
-	ptr = NULL;
-	pos = sizeof(t_malloc);
-	if (g_malloc[3] == NULL)
-		zone_init(&g_malloc[3], PAGE_SIZE);
-	zone = g_malloc[3];
-	elem = (t_free *)((char *)zone + pos);
-	while (pos < zone->size)
-	{
-		if (elem && elem->data >= size)
-		{
-			ptr = elem->address;
-			ft_bzero(elem, sizeof(t_free));
-			return (ptr);
-		}
-		pos += sizeof(t_free);
-		elem = (t_free *)((char *)zone + pos);
-		if (size >= zone->size)
-		{
-			pos = sizeof(t_malloc);
-			if (zone->next == NULL)
-				zone_init(&zone, PAGE_SIZE);
-			zone = zone->next;
-			elem = (t_free *)((char *)zone + pos);
-		}
-	}
-	return (NULL);
 }
 
 static void		*alloc_new(int i, size_t size)
@@ -78,7 +44,7 @@ static void		*alloc_new(int i, size_t size)
 	elem = NULL;
 	if (g_malloc[i] == NULL)
 		zone_init(&g_malloc[i], zone_size(i));
-	ptr = free_block_search(size);
+	ptr = block_search(size);
 	if (ptr == NULL)
 	{
 		if (i == 3 && g_malloc[i]->size - sizeof(t_malloc) < size)
@@ -104,13 +70,11 @@ void			*malloc(size_t size)
 	return (ptr);
 }
 
-#include <string.h>
-
 void			*realloc(void *ptr, size_t size)
 {
-	int		i;
-	void	*o;
-	t_header	*tmp;
+	int			i;
+	void		*o;
+	t_header	*elem;
 
 	o = NULL;
 	if (size == 0)
@@ -119,8 +83,8 @@ void			*realloc(void *ptr, size_t size)
 		return (malloc(size));
 	i = alloc_zone(size);
 	o = alloc_new(i, size);
-	tmp = (t_header *)ptr - 1;
-	memcpy(o, ptr, tmp->data);
+	elem = (t_header *)ptr - 1;
+	ft_memcpy(o, ptr, elem->data);
 	free(ptr);
 	return (o);
 }

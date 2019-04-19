@@ -11,7 +11,6 @@ static void		putnbr_hex(int fd, size_t nbr, int size)
 
 static void		putchar_mem(unsigned char *ptr, int j)
 {
-
 	while (j >= 0)
 	{
 		if (32 <= *(ptr - j) && *(ptr - j) <= 126)
