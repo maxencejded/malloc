@@ -34,16 +34,6 @@ void				zone_init(t_malloc **addr, size_t size)
 	}
 }
 
-void				zone_free(t_malloc *addr)
-{
-	if (addr)
-	{
-		if (addr->next)
-			zone_free(addr->next);
-		munmap(addr, addr->size);
-	}
-}
-
 size_t				zone_size(int i)
 {
 	if (i == 0)
@@ -51,4 +41,47 @@ size_t				zone_size(int i)
 	else if (i == 1)
 		return (SMALL_SIZE);
 	return (LARGE_SIZE);
+}
+
+static int			page_search(t_malloc *addr, void *ptr)
+{
+	t_header	*elem;
+
+	if ((size_t)addr < (size_t)ptr && (size_t)ptr < ((size_t)addr + addr->size))
+	{
+		elem = (t_header *)ptr - 1;
+		if (elem && elem->flag == 1)
+		{
+			block_add(elem, ptr);
+			elem->flag = 0;
+			return (1);
+		}
+		return (2);
+	}
+	return (0);
+}
+
+int					zone_search(void *ptr)
+{
+	int			i;
+	int			ret;
+	t_malloc	*tmp;
+
+	i = 0;
+	tmp = NULL;
+	while (i < 3)
+	{
+		tmp = g_malloc[i];
+		while (tmp)
+		{
+			ret = page_search(tmp, ptr);
+			if (ret == 1)
+				return (0);
+			else if (ret == 2)
+				return (2);
+			tmp = tmp->next;
+		}
+		i += 1;
+	}
+	return (1);
 }

@@ -46,8 +46,8 @@ void					error_double_free(size_t ptr);
 void					error_not_allocated(size_t ptr);
 
 void					zone_init(t_malloc **addr, size_t size);
-void					zone_free(t_malloc *addr);
 size_t					zone_size(int i);
+int						zone_search(void *ptr);
 
 void					block_add(t_header *i, void *ptr);
 void					*block_search(size_t size);

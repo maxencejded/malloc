@@ -34,4 +34,3 @@ void		error_not_allocated(size_t ptr)
 	print_ptr((size_t)ptr, 2);
 	write(2, " ***\n", 5);
 }
-
