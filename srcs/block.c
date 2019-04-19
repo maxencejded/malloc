@@ -31,7 +31,6 @@ void		*block_search(size_t size)
 {
 	void		*ptr;
 	t_free		*block;
-	t_header	*elem;
 	t_malloc	*zone;
 
 	zone = g_malloc[3];
@@ -43,7 +42,6 @@ void		*block_search(size_t size)
 		if (block && block->data >= size)
 		{
 			ptr = block->address;
-			elem = (t_header *)((char *)block->address - sizeof(t_header));
 			ft_bzero(block, sizeof(t_free));
 			return (ptr);
 		}
