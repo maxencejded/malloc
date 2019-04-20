@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-t_malloc		*g_malloc[4];
+t_malloc		*g_malloc[3];
 
 static t_malloc		*zone_new(size_t size, t_malloc *addr)
 {
@@ -13,6 +13,7 @@ static t_malloc		*zone_new(size_t size, t_malloc *addr)
 	ft_bzero(i, size);
 	i->use = S_MALLOC;
 	i->size = size;
+	i->free = NULL;
 	i->next = NULL;
 	return (i);
 }
@@ -47,7 +48,7 @@ size_t				zone_size(int i, size_t size)
 	return (((size % PAGE_SIZE) + 1) * PAGE_SIZE);
 }
 
-static int			page_search(t_malloc *addr, void *ptr)
+static int			page_search(int i, t_malloc *addr, void *ptr, int keep)
 {
 	t_header	*elem;
 
@@ -56,7 +57,11 @@ static int			page_search(t_malloc *addr, void *ptr)
 		elem = (t_header *)((char *)ptr - S_HEADER);
 		if (elem && elem->flag == 1)
 		{
-			block_add(elem, ptr);
+			if (keep == 0)
+			{
+				elem->flag = 0;
+				block_add(i, ptr);
+			}
 			return (1);
 		}
 		return (2);
@@ -64,25 +69,25 @@ static int			page_search(t_malloc *addr, void *ptr)
 	return (0);
 }
 
-int					zone_search(void *ptr)
+int					zone_search(void *ptr, int keep)
 {
 	int			i;
 	int			ret;
-	t_malloc	*tmp;
+	t_malloc	*addr;
 
 	i = 0;
-	tmp = NULL;
+	addr = NULL;
 	while (i < 3)
 	{
-		tmp = g_malloc[i];
-		while (tmp)
+		addr = g_malloc[i];
+		while (addr)
 		{
-			ret = page_search(tmp, ptr);
+			ret = page_search(i, addr, ptr, keep);
 			if (ret == 1)
 				return (0);
 			else if (ret == 2)
 				return (2);
-			tmp = tmp->next;
+			addr = addr->next;
 		}
 		i += 1;
 	}

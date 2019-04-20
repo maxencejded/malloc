@@ -31,18 +31,18 @@ typedef struct			s_header
 
 typedef struct			s_free
 {
-	size_t				data;
-	void				*address;
+	struct s_free		*next;
 }						t_free;
 
 typedef struct			s_malloc
 {
 	size_t				use;
 	size_t				size;
+	void				*free;
 	struct s_malloc		*next;
 }						t_malloc;
 
-extern t_malloc			*g_malloc[4];
+extern t_malloc			*g_malloc[3];
 
 void					print_memory(void *addr, size_t size);
 void					print_ptr(size_t ptr, int fd);
@@ -54,10 +54,10 @@ void					error_not_allocated(size_t ptr);
 
 void					zone_init(t_malloc **addr, size_t size);
 size_t					zone_size(int i, size_t size);
-int						zone_search(void *ptr);
+int						zone_search(void *ptr, int keep);
 
-void					block_add(t_header *i, void *ptr);
-void					*block_search(size_t size);
+void					block_add(int i, void *addr);
+void					*block_search(int i, size_t size);
 
 void					*malloc(size_t size);
 void					*realloc(void *ptr, size_t size);

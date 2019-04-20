@@ -1,53 +1,67 @@
 #include "malloc.h"
 
-void		block_add(t_header *i, void *ptr)
+static void		block_insert(t_malloc *addr, t_free *elem)
 {
-	t_free		*elem;
-	t_malloc	*zone;
+	t_free		*current;
+	t_free		*previous;
 
-	if (g_malloc[3] == NULL)
-		zone_init(&g_malloc[3], PAGE_SIZE);
-	zone = g_malloc[3];
-	if (zone == NULL)
-		return ;
-	elem = (t_free *)((char *)zone + S_MALLOC);
-	while ((size_t)elem < (size_t)zone + zone->size)
+	current = addr->free;
+	previous = NULL;
+	while (current != NULL)
 	{
-		if (elem->address == NULL)
-			break ;
-		elem = elem + 1;
-		if ((size_t)elem >= (size_t)zone + zone->size)
+		if (current > elem)
 		{
-			if (zone->next == NULL)
-				zone_init(&zone, PAGE_SIZE);
-			zone = zone->next;
-			elem = (t_free *)((char *)zone + S_MALLOC);
+			elem->next = current;
+			if (previous == NULL)
+				addr->free = NULL;
+			else
+				previous->next = elem;
+			return ;
 		}
+		previous = current;
+		current = current->next;
 	}
-	elem->data = i->data;
-	elem->address = ptr;
-	zone->use += sizeof(t_free);
+	previous->next = elem;
 }
 
-void		*block_search(size_t size)
+void			block_add(int i, void *addr)
 {
-	void		*ptr;
-	t_free		*block;
-	t_malloc	*zone;
+	t_free		*elem;
 
-	zone = g_malloc[3];
-	if (g_malloc[3] == NULL)
+	if (g_malloc[i] == NULL)
+		return ;
+	elem = (t_free *)addr;
+	elem->next = NULL;
+	if (g_malloc[i]->free == NULL)
+		g_malloc[i]->free = elem;
+	else
+		block_insert(g_malloc[i], elem);
+}
+
+void			*block_search(int i, size_t size)
+{
+	t_free		*current;
+	t_free		*previous;
+	t_header	*elem;
+
+	if (g_malloc[i] == NULL || g_malloc[i]->free == NULL)
 		return (NULL);
-	block = (t_free *)((char *)zone + S_MALLOC);
-	while ((size_t)block < (size_t)zone + zone->use)
+	current = g_malloc[i]->free;
+	previous = NULL;
+	while (current != NULL)
 	{
-		if (block && block->data >= size)
+		elem = (t_header *)((char *)current - sizeof(t_header));
+		if (elem && size <= elem->data)
 		{
-			ptr = block->address;
-			ft_bzero(block, sizeof(t_free));
-			return (ptr);
+			elem->flag = 1;
+			if (previous == NULL)
+				g_malloc[i]->free = current->next;
+			else
+				previous->next = current->next;
+			return ((void *)current);
 		}
-		block = block + 1;
+		previous = current;
+		current = current->next;
 	}
 	return (NULL);
 }

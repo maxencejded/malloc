@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-t_malloc		*g_malloc[4];
+t_malloc		*g_malloc[3];
 
 static int		alloc_zone(size_t size)
 {
@@ -41,7 +41,7 @@ static void		*alloc_new(int i, size_t size)
 	ptr = NULL;
 	if (g_malloc[i] == NULL)
 		zone_init(&g_malloc[i], zone_size(i, size));
-	ptr = block_search(size);
+	ptr = block_search(i, size);
 	if (ptr == NULL && g_malloc[i] != NULL)
 		ptr = alloc_find_new(g_malloc[i], size);
 	return (ptr);
@@ -55,6 +55,7 @@ void			*malloc(size_t size)
 	ptr = NULL;
 	if (size == 0)
 		return (NULL);
+	size = (size < sizeof(t_free)) ? sizeof(t_free) : size;
 	i = alloc_zone(size);
 	ptr = alloc_new(i, size);
 	return (ptr);
@@ -67,7 +68,7 @@ void			*realloc(void *ptr, size_t size)
 	t_header	*elem;
 
 	nptr = NULL;
-	if (size == 0 || zone_search(ptr) == 2)
+	if (size == 0 || zone_search(ptr, 1) == 2)
 		return (NULL);
 	if (ptr == NULL)
 		return (malloc(size));
