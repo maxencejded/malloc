@@ -6,7 +6,7 @@
 # include <sys/mman.h>
 # include <sys/resource.h>
 
-# pragma pack(1)
+//# pragma pack(1)
 
 # define PAGE_SIZE	getpagesize()
 # define TINY_SIZE	PAGE_SIZE * 10
@@ -15,6 +15,9 @@
 
 # define TINY_MAX	(size_t)PAGE_SIZE / 4
 # define SMALL_MAX	(size_t)PAGE_SIZE * 2
+
+# define S_MALLOC	sizeof(t_malloc)
+# define S_HEADER	sizeof(t_header)
 
 typedef struct			s_header
 {

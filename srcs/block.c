@@ -8,7 +8,9 @@ void		block_add(t_header *i, void *ptr)
 	if (g_malloc[3] == NULL)
 		zone_init(&g_malloc[3], PAGE_SIZE);
 	zone = g_malloc[3];
-	elem = (t_free *)((char *)zone + sizeof(t_malloc));
+	if (zone == NULL)
+		return ;
+	elem = (t_free *)((char *)zone + S_MALLOC);
 	while ((size_t)elem < (size_t)zone + zone->size)
 	{
 		if (elem->address == NULL)
@@ -19,7 +21,7 @@ void		block_add(t_header *i, void *ptr)
 			if (zone->next == NULL)
 				zone_init(&zone, PAGE_SIZE);
 			zone = zone->next;
-			elem = (t_free *)((char *)zone + sizeof(t_malloc));
+			elem = (t_free *)((char *)zone + S_MALLOC);
 		}
 	}
 	elem->data = i->data;
@@ -36,7 +38,7 @@ void		*block_search(size_t size)
 	zone = g_malloc[3];
 	if (g_malloc[3] == NULL)
 		return (NULL);
-	block = (t_free *)((char *)zone + sizeof(t_malloc));
+	block = (t_free *)((char *)zone + S_MALLOC);
 	while ((size_t)block < (size_t)zone + zone->use)
 	{
 		if (block && block->data >= size)

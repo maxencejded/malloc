@@ -8,8 +8,10 @@ static t_malloc		*zone_new(size_t size, t_malloc *addr)
 
 	i = (t_malloc *)mmap(addr, size, PROT_READ | PROT_WRITE,
 			MAP_ANON | MAP_PRIVATE, -1, 0);
+	if (i == MAP_FAILED)
+		return (NULL);
 	ft_bzero(i, size);
-	i->use = sizeof(t_malloc);
+	i->use = S_MALLOC;
 	i->size = size;
 	i->next = NULL;
 	return (i);
@@ -26,6 +28,8 @@ void				zone_init(t_malloc **addr, size_t size)
 	else
 	{
 		i = zone_new(size, *addr);
+		if (i == NULL)
+			return ;
 		diff = (size_t)i - (size_t)(*addr) - (*addr)->size;
 		if (diff == 0)
 			(*addr)->size += size;
@@ -49,7 +53,7 @@ static int			page_search(t_malloc *addr, void *ptr)
 
 	if ((size_t)addr < (size_t)ptr && (size_t)ptr < ((size_t)addr + addr->size))
 	{
-		elem = (t_header *)((char *)ptr - sizeof(t_header));
+		elem = (t_header *)((char *)ptr - S_HEADER);
 		if (elem && elem->flag == 1)
 		{
 			block_add(elem, ptr);

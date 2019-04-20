@@ -11,12 +11,9 @@ static void	print_zone(t_malloc *addr)
 
 void		malloc_print(void)
 {
-	if (g_malloc[0])
-		print_zone(g_malloc[0]);
-	if (g_malloc[1])
-		print_zone(g_malloc[1]);
-	if (g_malloc[2])
-		print_zone(g_malloc[2]);
+	print_zone(g_malloc[0]);
+	print_zone(g_malloc[1]);
+	print_zone(g_malloc[2]);
 }
 
 void		error_double_free(size_t ptr)

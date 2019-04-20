@@ -20,7 +20,7 @@ static void		show_alloc_zone(t_malloc *addr, size_t *total)
 {
 	t_header	*elem;
 
-	elem = (t_header *)((char *)addr + sizeof(t_malloc));
+	elem = (t_header *)((char *)addr + S_MALLOC);
 	while ((size_t)elem < (size_t)addr + addr->use)
 	{
 		if (elem && elem->flag == 1)
@@ -33,7 +33,7 @@ static void		show_alloc_zone(t_malloc *addr, size_t *total)
 			write(1, " bytes\n", 7);
 			*total += elem->data;
 		}
-		elem = (t_header *)((char *)elem + elem->data + sizeof(t_header));
+		elem = (t_header *)((char *)elem + elem->data + S_HEADER);
 	}
 	if (addr->next)
 	{
