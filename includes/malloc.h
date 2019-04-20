@@ -14,9 +14,8 @@
 */
 
 # define PAGE_SIZE	getpagesize()
-# define TINY_SIZE	PAGE_SIZE * 10
-# define SMALL_SIZE	PAGE_SIZE * 20
-# define LARGE_SIZE	PAGE_SIZE * 30
+# define TINY_SIZE	PAGE_SIZE * 512
+# define SMALL_SIZE	PAGE_SIZE * PAGE_SIZE
 
 # define TINY_MAX	(size_t)PAGE_SIZE / 4
 # define SMALL_MAX	(size_t)PAGE_SIZE * 2
@@ -54,7 +53,7 @@ void					error_double_free(size_t ptr);
 void					error_not_allocated(size_t ptr);
 
 void					zone_init(t_malloc **addr, size_t size);
-size_t					zone_size(int i);
+size_t					zone_size(int i, size_t size);
 int						zone_search(void *ptr);
 
 void					block_add(t_header *i, void *ptr);

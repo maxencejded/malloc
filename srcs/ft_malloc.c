@@ -7,9 +7,9 @@ static int		alloc_zone(size_t size)
 	int		i;
 
 	i = 2;
-	if (size < TINY_MAX)
+	if (size <= TINY_MAX)
 		i = 0;
-	else if (size < SMALL_MAX)
+	else if (size <= SMALL_MAX)
 		i = 1;
 	return (i);
 }
@@ -28,7 +28,7 @@ static void		*alloc_find_new(t_malloc *addr, size_t size)
 		addr->use += size + S_HEADER;
 		return (elem + 1);
 	}
-	zone_init(&addr, zone_size(alloc_zone(size)));
+	zone_init(&addr, zone_size(alloc_zone(size), size));
 	if (addr->next)
 		return (alloc_find_new(addr->next, size));
 	return (alloc_find_new(addr, size));
@@ -40,14 +40,10 @@ static void		*alloc_new(int i, size_t size)
 
 	ptr = NULL;
 	if (g_malloc[i] == NULL)
-		zone_init(&g_malloc[i], zone_size(i));
+		zone_init(&g_malloc[i], zone_size(i, size));
 	ptr = block_search(size);
 	if (ptr == NULL && g_malloc[i] != NULL)
-	{
-		if (i == 3 && g_malloc[i]->size - S_MALLOC - S_HEADER < size)
-			zone_init(&g_malloc[i], ((size % LARGE_SIZE) + 1) * LARGE_SIZE);
 		ptr = alloc_find_new(g_malloc[i], size);
-	}
 	return (ptr);
 }
 

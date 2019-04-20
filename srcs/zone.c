@@ -38,13 +38,13 @@ void				zone_init(t_malloc **addr, size_t size)
 	}
 }
 
-size_t				zone_size(int i)
+size_t				zone_size(int i, size_t size)
 {
 	if (i == 0)
 		return (TINY_SIZE);
 	else if (i == 1)
 		return (SMALL_SIZE);
-	return (LARGE_SIZE);
+	return (((size % PAGE_SIZE) + 1) * PAGE_SIZE);
 }
 
 static int			page_search(t_malloc *addr, void *ptr)
