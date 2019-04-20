@@ -1,7 +1,5 @@
 #include "malloc.h"
 
-t_malloc		*g_malloc[3];
-
 static t_malloc		*zone_new(size_t size, t_malloc *addr)
 {
 	t_malloc	*i;
