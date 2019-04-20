@@ -37,7 +37,7 @@ void		*block_search(size_t size)
 	if (g_malloc[3] == NULL)
 		return (NULL);
 	block = (t_free *)((char *)zone + sizeof(t_malloc));
-	while ((size_t)block < (size_t)zone + zone->size)
+	while ((size_t)block < (size_t)zone + zone->use)
 	{
 		if (block && block->data >= size)
 		{

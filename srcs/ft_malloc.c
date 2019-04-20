@@ -45,7 +45,7 @@ static void		*alloc_new(int i, size_t size)
 	ptr = block_search(size);
 	if (ptr == NULL)
 	{
-		if (i == 3 && g_malloc[i]->size - sizeof(t_malloc) < size)
+		if (i == 3 && g_malloc[i]->size - sizeof(t_malloc) - sizeof(t_header) < size)
 			zone_init(&g_malloc[i], ((size % LARGE_SIZE) + 1) * LARGE_SIZE);
 		ptr = alloc_find_new(g_malloc[i], size);
 	}
@@ -69,6 +69,7 @@ void			*realloc(void *ptr, size_t size)
 {
 	int			i;
 	void		*o;
+	size_t		headers;
 	t_header	*elem;
 
 	o = NULL;
@@ -77,9 +78,15 @@ void			*realloc(void *ptr, size_t size)
 	if (ptr == NULL)
 		return (malloc(size));
 	i = alloc_zone(size);
-	o = alloc_new(i, size);
+	headers = sizeof(t_header) + sizeof(t_malloc);
 	elem = (t_header *)ptr - 1;
+	if (g_malloc[i] != NULL && elem->data + headers == g_malloc[i]->use &&
+		size <= g_malloc[i]->size - headers)
+	{
+		elem->data = size;
+		return (ptr);
+	}
+	o = alloc_new(i, size);
 	ft_memcpy(o, ptr, elem->data);
-	free(ptr);
 	return (o);
 }
