@@ -6,7 +6,12 @@
 # include <sys/mman.h>
 # include <sys/resource.h>
 
-//# pragma pack(1)
+/*
+** Reduce the size of the struct with
+** # pragma pack(1)
+** The idea is to align the struct on 1 byte
+** in place of 4 ususally
+*/
 
 # define PAGE_SIZE	getpagesize()
 # define TINY_SIZE	PAGE_SIZE * 10
