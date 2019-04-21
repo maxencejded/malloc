@@ -27,10 +27,12 @@ static void		block_insert(t_malloc *addr, t_free *elem)
 		{
 			elem->next = current;
 			if (previous == NULL)
+			{
 				addr->free = elem;
-			else
-				break ;
-			return ;
+				defragment_free(elem, current);
+				return ;
+			}
+			break ;
 		}
 		previous = current;
 		current = current->next;
