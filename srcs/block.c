@@ -1,5 +1,19 @@
 #include "malloc.h"
 
+static void		defragment_free(t_free *elem, t_free *current)
+{
+	t_header	*lower;
+	t_header	*higher;
+
+	lower = (t_header *)((char *)elem - sizeof(t_header));
+	higher = (t_header *)((char *)current - sizeof(t_header));
+	if ((size_t)lower + lower->data + sizeof(t_header) == (size_t)higher)
+	{
+		lower->data += higher->data + sizeof(t_header);
+		elem->next = current->next;
+	}
+}
+
 static void		block_insert(t_malloc *addr, t_free *elem)
 {
 	t_free		*current;
@@ -13,15 +27,16 @@ static void		block_insert(t_malloc *addr, t_free *elem)
 		{
 			elem->next = current;
 			if (previous == NULL)
-				addr->free = NULL;
+				addr->free = elem;
 			else
-				previous->next = elem;
+				break ;
 			return ;
 		}
 		previous = current;
 		current = current->next;
 	}
 	previous->next = elem;
+	defragment_free(previous, elem);
 }
 
 void			block_add(int i, void *addr)
