@@ -9,7 +9,7 @@ CFLAGS			= -Wall -Wextra -Werror
 INCLUDES		= -I includes
 
 FUNCTIONS		= ft_malloc.c ft_free.c zone.c block.c
-PRINT			= print.c show_alloc.c print_memory.c
+PRINT			= show_alloc.c print_memory.c
 LIBFT			= ft_bzero.c ft_memcpy.c
 FILES			= $(addprefix srcs/, $(FUNCTIONS) $(PRINT) $(LIBFT))
 OBJECTS			= $(FILES:.c=.o)

@@ -6,13 +6,13 @@
 /*   By: mjacques <mjacques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/20 17:25:31 by mjacques          #+#    #+#             */
-/*   Updated: 2019/04/20 17:25:31 by mjacques         ###   ########.fr       */
+/*   Updated: 2019/04/20 17:37:08 by mjacques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "malloc.h"
 
-static void		putnbr_hex(int fd, size_t nbr, int size)
+void			putnbr_hex(int fd, size_t nbr, int size)
 {
 	static char	*base = "0123456789abcdef";
 
@@ -61,8 +61,18 @@ void			print_memory(void *addr, size_t size)
 	}
 }
 
-void			print_ptr(size_t ptr, int fd)
+static void		print_zone(t_malloc *addr)
 {
-	write(1, "0x", 2);
-	putnbr_hex(fd, ptr, 16);
+	if (addr)
+	{
+		print_memory(addr, addr->size);
+		print_zone(addr->next);
+	}
+}
+
+void			malloc_print(void)
+{
+	print_zone(g_malloc[0]);
+	print_zone(g_malloc[1]);
+	print_zone(g_malloc[2]);
 }

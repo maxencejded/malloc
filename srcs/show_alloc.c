@@ -6,7 +6,7 @@
 /*   By: mjacques <mjacques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/20 17:25:24 by mjacques          #+#    #+#             */
-/*   Updated: 2019/04/20 17:25:24 by mjacques         ###   ########.fr       */
+/*   Updated: 2019/04/20 17:36:25 by mjacques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,10 @@ void			show_alloc_mem(void)
 	write(1, "Total : ", 8);
 	ft_putnbr(total);
 	write(1, " bytes\n", 7);
+}
+
+void			print_ptr(size_t ptr, int fd)
+{
+	write(1, "0x", 2);
+	putnbr_hex(fd, ptr, 16);
 }

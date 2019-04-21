@@ -6,7 +6,7 @@
 /*   By: mjacques <mjacques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/20 17:25:39 by mjacques          #+#    #+#             */
-/*   Updated: 2019/04/20 17:25:39 by mjacques         ###   ########.fr       */
+/*   Updated: 2019/04/20 17:36:52 by mjacques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,12 @@ typedef struct			s_malloc
 
 extern t_malloc			*g_malloc[3];
 
+void					putnbr_hex(int fd, size_t nbr, int size);
 void					print_memory(void *addr, size_t size);
-void					print_ptr(size_t ptr, int fd);
+void					malloc_print(void);
 
 void					show_alloc_mem(void);
-void					malloc_print(void);
-void					error_double_free(size_t ptr);
-void					error_not_allocated(size_t ptr);
+void					print_ptr(size_t ptr, int fd);
 
 void					zone_init(t_malloc **addr, size_t size);
 size_t					zone_size(int i, size_t size);
