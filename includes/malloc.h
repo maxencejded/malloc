@@ -6,7 +6,7 @@
 /*   By: mjacques <mjacques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/20 17:25:39 by mjacques          #+#    #+#             */
-/*   Updated: 2019/04/20 17:36:52 by mjacques         ###   ########.fr       */
+/*   Updated: 2019/05/25 16:33:44 by mjacques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@
 */
 
 # define PAGE_SIZE	getpagesize()
-# define TINY_SIZE	PAGE_SIZE * 512
-# define SMALL_SIZE	PAGE_SIZE * PAGE_SIZE
+# define TINY_SIZE	PAGE_SIZE * 32
+# define SMALL_SIZE	PAGE_SIZE * 256
 
 # define TINY_MAX	(size_t)PAGE_SIZE / 4
 # define SMALL_MAX	(size_t)PAGE_SIZE * 2
