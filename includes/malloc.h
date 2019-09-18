@@ -6,7 +6,7 @@
 /*   By: mjacques <mjacques@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/20 17:25:39 by mjacques          #+#    #+#             */
-/*   Updated: 2019/05/25 16:33:44 by mjacques         ###   ########.fr       */
+/*   Updated: 2019/09/17 20:03:05 by mjacques         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,10 @@
 # define S_MALLOC	sizeof(t_malloc)
 # define S_HEADER	sizeof(t_header)
 
+# define FREE_SUCCESS	0
+# define FREE_FAILURE	2
+# define FREE_DOUBLE	4
+
 typedef struct			s_header
 {
 	char				flag;
@@ -56,12 +60,11 @@ typedef struct			s_malloc
 
 extern t_malloc			*g_malloc[3];
 
-void					putnbr_hex(int fd, size_t nbr, int size);
-void					print_memory(void *addr, size_t size);
+void					putnbr_hex(int fd, size_t nbr, size_t size);
 void					malloc_print(void);
 
 void					show_alloc_mem(void);
-void					print_ptr(size_t ptr, int fd);
+void					print_ptr(int fd, size_t ptr);
 
 void					zone_init(t_malloc **addr, size_t size);
 size_t					zone_size(int i, size_t size);

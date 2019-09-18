@@ -16,18 +16,18 @@ t_malloc		*g_malloc[3];
 
 static void		error_double_free(size_t ptr)
 {
-	write(2, "malloc: *** ", 12);
-	write(2, "double free or corruption : ", 29);
-	print_ptr((size_t)ptr, 2);
-	write(2, " ***\n", 5);
+	write(STDERR_FILENO, "malloc: *** ", 12);
+	write(STDERR_FILENO, "double free or corruption : ", 29);
+	print_ptr(STDERR_FILENO, (size_t)ptr);
+	write(STDERR_FILENO, " ***\n", 5);
 }
 
 static void		error_not_allocated(size_t ptr)
 {
-	write(2, "malloc: *** ", 12);
-	write(2, "pointer being freed was not allocated : ", 40);
-	print_ptr((size_t)ptr, 2);
-	write(2, " ***\n", 5);
+	write(STDERR_FILENO, "malloc: *** ", 12);
+	write(STDERR_FILENO, "pointer being freed was not allocated : ", 40);
+	print_ptr(STDERR_FILENO, (size_t)ptr);
+	write(STDERR_FILENO, " ***\n", 5);
 }
 
 void			free(void *ptr)
@@ -38,8 +38,8 @@ void			free(void *ptr)
 	if (ptr == NULL)
 		return ;
 	ret = zone_search(ptr, 0);
-	if (ret == 1)
+	if (ret == FREE_FAILURE)
 		error_not_allocated((size_t)ptr);
-	if (ret == 2)
+	if (ret == FREE_DOUBLE)
 		error_double_free((size_t)ptr);
 }

@@ -38,8 +38,7 @@ void				zone_init(t_malloc **addr, size_t size)
 		(*addr) = zone_new(size, 0);
 	else
 	{
-		i = zone_new(size, *addr);
-		if (i == NULL)
+		if ((i = zone_new(size, *addr)) == NULL)
 			return ;
 		diff = (size_t)i - (size_t)(*addr) - (*addr)->size;
 		if (diff == 0)
@@ -72,17 +71,17 @@ static int			page_search(int i, t_malloc *addr, void *ptr, int keep)
 				elem->flag = 0;
 				block_add(i, ptr);
 			}
-			return (1);
+			return (FREE_SUCCESS);
 		}
-		return (2);
+		return (FREE_DOUBLE);
 	}
-	return (0);
+	return (FREE_FAILURE);
 }
 
 int					zone_search(void *ptr, int keep)
 {
 	int			i;
-	int			ret;
+	short		ret;
 	t_malloc	*addr;
 
 	i = 0;
@@ -93,13 +92,13 @@ int					zone_search(void *ptr, int keep)
 		while (addr)
 		{
 			ret = page_search(i, addr, ptr, keep);
-			if (ret == 1)
-				return (0);
-			else if (ret == 2)
-				return (2);
+			if (ret == FREE_SUCCESS)
+				return (FREE_SUCCESS);
+			else if (ret == FREE_DOUBLE)
+				return (FREE_DOUBLE);
 			addr = addr->next;
 		}
-		i += 1;
+		++i;
 	}
-	return (1);
+	return (FREE_FAILURE);
 }
