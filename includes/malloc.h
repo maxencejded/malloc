@@ -13,7 +13,6 @@
 #ifndef MALLOC_H
 # define MALLOC_H
 
-# include <stdlib.h>
 # include <unistd.h>
 # include <sys/mman.h>
 # include <sys/resource.h>
@@ -61,6 +60,7 @@ typedef struct			s_malloc
 extern t_malloc			*g_malloc[3];
 
 void					putnbr_hex(int fd, size_t nbr, size_t size);
+void					print_memory(void *addr, size_t size);
 void					malloc_print(void);
 
 void					show_alloc_mem(void);

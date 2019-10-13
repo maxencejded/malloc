@@ -65,6 +65,6 @@ void			show_alloc_mem(void)
 
 void			print_ptr(int fd, size_t ptr)
 {
-	write(STDOUT_FILENO, "0x", 2);
+	write(fd, "0x", 2);
 	putnbr_hex(fd, ptr, 16);
 }

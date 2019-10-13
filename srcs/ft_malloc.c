@@ -16,14 +16,11 @@ t_malloc		*g_malloc[3];
 
 static int		alloc_zone(size_t size)
 {
-	int		i;
-
-	i = 2;
 	if (size <= TINY_MAX)
-		i = 0;
+		return (0);
 	else if (size <= SMALL_MAX)
-		i = 1;
-	return (i);
+		return (1);
+	return (2);
 }
 
 static void		*alloc_find_new(t_malloc *addr, size_t size)
@@ -79,21 +76,21 @@ void			*realloc(void *ptr, size_t size)
 	void		*nptr;
 	t_header	*elem;
 
-	nptr = NULL;
-	if (size == 0 || zone_search(ptr, 1) == 2)
-		return (NULL);
 	if (ptr == NULL)
 		return (malloc(size));
+	if (zone_search(ptr, 1) != FREE_SUCCESS)
+		return (NULL);
 	i = alloc_zone(size);
 	elem = (t_header *)ptr - 1;
-	if (g_malloc[i] != NULL &&
-		elem->data + S_HEADER + S_MALLOC == g_malloc[i]->use &&
-		size + S_HEADER <= g_malloc[i]->size - S_MALLOC)
+	if (g_malloc[i]
+		&& elem->data + S_HEADER + S_MALLOC == g_malloc[i]->use
+		&& size + S_HEADER <= g_malloc[i]->size - S_MALLOC)
 	{
 		elem->data = size;
 		return (ptr);
 	}
 	nptr = alloc_new(i, size);
-	ft_memcpy(nptr, ptr, elem->data);
+	ft_memcpy(nptr, ptr, (elem->data > size) ? size : elem->data);
+	zone_search(ptr, 0);
 	return (nptr);
 }

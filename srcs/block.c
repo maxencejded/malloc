@@ -17,11 +17,11 @@ static void		defragment_free(t_free *elem, t_free *current)
 	t_header	*lower;
 	t_header	*higher;
 
-	lower = (t_header *)((char *)elem - sizeof(t_header));
-	higher = (t_header *)((char *)current - sizeof(t_header));
-	if ((size_t)lower + lower->data + sizeof(t_header) == (size_t)higher)
+	lower = (t_header *)elem - 1;
+	higher = (t_header *)current - 1;
+	if ((size_t)lower + lower->data + S_HEADER == (size_t)higher)
 	{
-		lower->data += higher->data + sizeof(t_header);
+		lower->data += higher->data + S_HEADER;
 		elem->next = current->next;
 	}
 }
@@ -33,7 +33,7 @@ static void		block_insert(t_malloc *addr, t_free *elem)
 
 	current = addr->free;
 	previous = NULL;
-	while (current != NULL)
+	while (current)
 	{
 		if (current > elem)
 		{
@@ -49,6 +49,8 @@ static void		block_insert(t_malloc *addr, t_free *elem)
 		previous = current;
 		current = current->next;
 	}
+	if (current)
+		elem->next = current;
 	previous->next = elem;
 	defragment_free(previous, elem);
 }
@@ -77,9 +79,9 @@ void			*block_search(int i, size_t size)
 		return (NULL);
 	current = g_malloc[i]->free;
 	previous = NULL;
-	while (current != NULL)
+	while (current)
 	{
-		elem = (t_header *)((char *)current - sizeof(t_header));
+		elem = (t_header *)current - 1;
 		if (elem && size <= elem->data)
 		{
 			elem->flag = 1;

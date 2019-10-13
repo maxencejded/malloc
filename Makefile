@@ -5,7 +5,7 @@ endif
 CC				= gcc
 RM				= rm -f
 NAME			= libft_malloc_$(HOSTTYPE).so
-CFLAGS			= -Wall -Wextra -Werror
+CFLAGS			= -Wall -Wextra -Werror -g
 INCLUDES		= -I includes
 
 FUNCTIONS		= ft_malloc.c ft_free.c zone.c block.c
@@ -24,6 +24,9 @@ all: $(NAME)
 $(NAME): $(OBJECTS)
 	@$(CC) $(CFLAGS) -shared -o $@ $(INCLUDES) $(OBJECTS)
 	@ln -sf $@ libft_malloc.so
+
+test: all
+	$(CC) $(CFLAGS) main.c $(INCLUDES) libft_malloc.so
 
 clean:
 	@$(RM) $(OBJECTS)
