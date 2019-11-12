@@ -42,16 +42,14 @@ void				zone_init(t_malloc **addr, size_t size)
 		zone = zone_new(size, *addr);
 		if (zone == NULL)
 			return ;
-		diff = (size_t)zone - (size_t)(*addr) - (*addr)->size;
+		tmp = *addr;
+		while (tmp->next)
+			tmp = tmp->next;
+		diff = (size_t)zone - (size_t)tmp - tmp->size;
 		if (diff == 0)
-			(*addr)->size += size;
+			tmp->size += size;
 		else
-		{
-			tmp = *addr;
-			while (tmp->next)
-				tmp = tmp->next;
 			tmp->next = zone;
-		}
 	}
 }
 
